@@ -2,7 +2,7 @@
 一个基于Electron的简易火币网客户端
 
 ## 第一版
-    BUG很多，以后慢慢更新
+   BUG很多，以后慢慢更新
 
 ## 界面
    * 主界面
@@ -18,8 +18,8 @@
    ![退出](https://github.com/sendtothefuture/Ehuobi/raw/master/images_folder/exit.png)
 
 ## 运行方法
-    ``` 
-    npm install
+```c
+npm install
 
-    electron . 
-    ```
+electron . 
+```
