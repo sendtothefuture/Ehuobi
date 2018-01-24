@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>火币小程序</title>
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap-grid.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/card.css" >
+    <script src="./js/echarts.min.js"></script>
+    <script src="./js/sweetalert.min.js"></script>
+</head>
+<body>
+<div class="demo">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3 col-sm-6" >
+        <label class="btn btn-primary" onclick="changebtn('BTC')" style="margin-top:15px">
+          BTC/USDT
+        </label>
+        <label class="btn btn-primary" onclick="changebtn('BCH')" style="margin-top:15px">
+          BCH/USDT
+        </label>
+        <label class="btn btn-primary" onclick="changebtn('XRP')" style="margin-top:15px">
+          XRP/USDT
+        </label>
+        <label class="btn btn-primary" onclick="changebtn('ETH')" style="margin-top:15px">
+          ETH/USDT
+        </label>
+        <label class="btn btn-primary" onclick="changebtn('LTC')" style="margin-top:15px">
+          LTC/USDT
+        </label>
+        <label class="btn btn-primary" onclick="changebtn('DASH')" style="margin-top:15px">
+          DASH/USDT
+        </label>
+        <label class="btn btn-primary" onclick="changebtn('EOS')" style="margin-top:15px">
+          EOS/USDT
+        </label>
+        <label class="btn btn-primary" onclick="changebtn('ETC')" style="margin-top:15px">
+          ETC/USDT
+        </label>
+        <label class="btn btn-primary" onclick="changebtn('OMG')" style="margin-top:15px">
+          OMG/USDT
+        </label>
+        <label class="btn btn-primary" onclick="changebtn('ZEC')" style="margin-top:15px">
+          ZEC/USDT
+        </label>
+        <div style="margin-top:20px;-webkit-app-region: drag">
+          <img src="./assets/img/cat.png"  height="72" width="72"/>
+           拖我移动窗体
+        </div>
+        <div style="margin-top:20px;">
+          <img id="btnshowmini" src="./assets/img/search_cat.png"  height="72" width="72"/>
+           显示mini小窗
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="pricingTable">
+                         <div class="pricingTable-header">
+                             <i class="fa fa-adjust"></i>
+                             <div class="price-value"><span id="price">0</span><span class="month">当前价格(USDT)</span> </div>
+                         </div>
+                         <h3 class="heading"><span id="symbol">BTC</span></h3>
+                         <div class="pricing-content">
+                             <ul>
+                                 <li>最低价格:<span id="low" style="font-weight: bold;">0</span></li>
+                                 <li>最高价格:<span id="high" style="font-weight: bold;">0</span></li>
+                                 <li>成交量:<span id="amount" style="font-weight: bold;">0</span></li>
+                                 <li>成交额:<span id="vol" style="font-weight: bold;">0</span></li>
+                             </ul>
+                         </div>
+                         <div class="pricingTable-signup">
+                             <a id="btnclose" href="#" style="text-decoration : none">关闭程序</a>
+                         </div>
+                     </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+        <div id="main" style="width: 480px;height:450px;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+//定义变量
+var timeline = new Array(); //日期
+var opens = new Array();//开盘价
+var open=0 //开盘价
+var amount=0 //成交量
+var count=0 //成交笔数
+var low=0 //最低价
+var high=0 //最高价
+var vol=0 //成交额
+
+// 基于准备好的dom，初始化echarts实例
+var myChart = echarts.init(document.getElementById('main'));
+//接收信息
+const ipc =require('electron').ipcRenderer
+    ipc.on('kline', function (event, arg) {
+
+    var nowtime = new Date();
+    var counter=0;
+
+
+    open = arg.open; //开盘价
+    amount = arg.amount; //成交量
+    count = arg.count;//成交笔数
+    low = arg.low;//最低价
+    high = arg.high;//最高价
+    vol = arg.vol;//成交额
+
+        counter=opens.push(arg.open)
+        if(counter>=8){
+          opens.shift();
+        }
+
+        counter=timeline.push(nowtime.toLocaleTimeString())
+        if(counter>=8){
+          timeline.shift();
+        }
+
+
+        // 指定图表的配置项和数据
+        var option = {
+          title:{
+            text:'实时价格',
+            subtext:'Moumou'
+          },
+
+          xAxis: {
+            type: 'category',
+            boundaryGap:false,
+            data: timeline
+          },
+          yAxis: {
+            type: 'value',
+            boundaryGap: false,
+            splitNumber:3,
+            max:high+5,
+            min:low-5
+          },
+          series: [
+            {
+              name:'当前价格',
+              data: opens,
+              type: 'line',
+              smooth:true
+            },
+         ]
+       };
+        myChart.setOption(option,true);
+        document.getElementById('price').innerHTML = open
+        document.getElementById('high').innerHTML = high
+        document.getElementById('low').innerHTML = low
+        document.getElementById('amount').innerHTML = amount.toFixed(2)
+        document.getElementById('vol').innerHTML = vol.toFixed(2)
+      })
+
+      //eth按钮按下
+      function changebtn(type){
+        swal({
+          title: "恭喜！",
+          text: "订阅"+type+"信息成功",
+          icon: "success",
+          button: "确定",
+        });
+        document.getElementById('symbol').innerHTML=type
+        var types=type.toLowerCase()
+        ipc.send('userrequst',types+'usdt')
+      }
+
+      //退出按钮
+      const closeBtn = document.getElementById('btnclose')
+      closeBtn.addEventListener('click',function(event){
+        swal({
+          title: "确定退出吗？",
+          text: "你将无法查看实时价格！",
+          icon: "warning",
+          buttons:true,
+          dangerMode:true
+        }).then((willDelete)=>{
+          if(willDelete){
+              ipc.send('userrequst', 'close')
+          }else{
+
+          }
+        })
+      })
+
+      //显示小窗体
+      const showBtn = document.getElementById('btnshowmini')
+      showBtn.addEventListener('click',function(event){
+        ipc.send('userrequst', 'showmini')
+      })
+
+</script>
+</body>
+</html>

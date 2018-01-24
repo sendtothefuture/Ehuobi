@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>火币小程序</title>
+</head>
+<body>
+  <div style="-webkit-app-region: drag">
+    <div>
+      <img id='img' height="150px" width="150px" src="./assets/img/cat.gif" />
+    </div>
+    <div>
+      <b id="name" style="font-size:36px"></b>
+      <b id="price" style="font-size:36px;color:	#484891">0.0</b>
+    </div>
+
+  </div>
+
+</body>
+<script>
+var num=Math.ceil(Math.random()*9)
+var imgsrc="./assets/img/cat.png"
+console.log(num)
+const img = document.getElementById('img')
+switch(num){
+  case 1:
+    imgsrc="./assets/img/miniwin/1.png"
+    break
+  case 2:
+    imgsrc="./assets/img/miniwin/2.jpg"
+    break
+  case 3:
+    imgsrc="./assets/img/miniwin/3.gif"
+    break
+  case 4:
+    imgsrc="./assets/img/miniwin/4.gif"
+    break
+  case 5:
+    imgsrc="./assets/img/miniwin/5.gif"
+    break
+  case 6:
+    imgsrc="./assets/img/miniwin/6.gif"
+    break
+  case 7:
+    imgsrc="./assets/img/miniwin/7.gif"
+    break
+  case 8:
+    imgsrc="./assets/img/miniwin/8.jpg"
+    break
+  case 9:
+    imgsrc="./assets/img/miniwin/9.gif"
+    break
+}
+img.src=imgsrc
+var price = document.getElementById('price')
+var coinName = document.getElementById('name')
+const ipc =require('electron').ipcRenderer
+    ipc.on('kline', function (event, arg) {
+      open = arg.open; //开盘价
+      price.innerHTML=open
+    })
+    ipc.on('coinname',function(event,arg){
+      coinName.innerHTML=arg
+    })
+</script>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "Ehuobi",
+  "version": "0.0.1",
+  "main": "main.js",
+  "dependencies": {
+    "electron": "^1.7.11",
+    "moment": "^2.20.1",
+    "pako": "^1.0.6",
+    "ws": "^4.0.0"
+  }
+}
